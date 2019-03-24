@@ -1,0 +1,4 @@
+*.swp
+sqlite.db
+cookie-jar.txt
+.vscode
