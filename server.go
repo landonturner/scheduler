@@ -117,14 +117,14 @@ func logRoutes(router *mux.Router) {
 func fileServerWithIndexFallback() http.Handler {
 	fs := http.Dir("client/dist")
 	fsh := http.FileServer(fs)
-	dat, err := ioutil.ReadFile("client/dist/index.html")
+	index, err := ioutil.ReadFile("client/dist/index.html")
 	if err != nil {
 		log.Fatalln("Error reading client/dist/index.html", err.Error())
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, err := fs.Open(path.Clean(r.URL.Path))
 		if os.IsNotExist(err) {
-			w.Write(dat)
+			w.Write(index)
 			return
 		}
 		fsh.ServeHTTP(w, r)
