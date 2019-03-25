@@ -13,24 +13,20 @@ index.html page and lets vue handle the 404 page. This allows us to use
 
 ## Usages
 
-Any remote endpoint that needs to be hit at a certain time. This can be very
-useful for webhook endpoints. Scheduling jenkins builds or netlify deploys or
-slack messages through the webook interface are just a few examples.
-
-I personally use this to have a nice friendly way to schedule jenkins builds
-that rebuild and deploy a website, so I don't have to wake up early in the
-morning to do it.
+This can be used to schedule http calls to any remote endpoint. This can be
+very useful for webhook endpoints. Scheduling jenkins builds or netlify deploys
+or slack messages through the webook interface are just a few examples.
 
 ## Development Instructions
 
-The api server serves the client files, but when in development it is more
-convenient to use vue's development server so you can leverage the watching
-functionality (auto reload browser when a code change has happened). To do
-this, start both the api and the client web server. Connect to the front end
-through your favorite browser to http://localhost:8080 (as instructed in your
-console). CORS is not an issue despite the two services running on different
-ports because the vue-cli-service proxys the api server (configured in
-client/vue.config.js).
+In production the api server serves the client files, but when in development
+it is more convenient to use vue's development server so you can leverage the
+watching functionality (auto reload browser when a code change has happened).
+To do this, start both the api and the client web server. Connect to the front
+end through your favorite browser to http://localhost:8080 (as instructed in
+your console). CORS is not an issue despite the two services running on
+different ports because the vue-cli-service proxys the api server (configured
+in client/vue.config.js).
 
 #### Starting the API Server
 
@@ -58,9 +54,7 @@ This will watch the client folder for changes and auto reload in your browser.
 ## Production Instructions
 
 For production, we want to build the client files for the server then just
-start the server.  I have added a dockerfile that results with a pretty clean
-image, but its honstely just as convenient (if not more so) to just run it from
-the command line.
+start the server. I have added a dockerfile if that suits your fancy.
 
 #### Building the Client
 Build the client so that the golang server has files to serve. From the
@@ -82,6 +76,17 @@ env JWT_SECRET="im a 32 bit hex encoded secret" REMOTE_URL="https://example.com/
 located in the folder you are running the program. This is pretty sloppy,
 should be configurable and is a great target for a next step if anyone even
 bothers to look at this.
+
+#### Docker
+The Dockerfile uses multi stage builds to minimize final image size. It builds
+all the client code in a node container, and the golang code in a golang
+container then mounts the two into an alpine container. The resulting size was
+22.7MB. The default image name is `scheduler`.
+
+```
+make build
+make docker-run
+```
 
 ## Registering Users
 
